@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-i18n="title">Бюро шифрів «Північна Зірка»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="session-bar" id="sessionBar" hidden>
+      <span class="session-user" id="sessionUser">—</span>
+      <span class="session-timer" id="sessionTimer">00:00</span>
+      <button id="logoutBtn" type="button" data-i18n="gate-logout">Вийти</button>
+    </div>
+    <button class="lang-btn" id="langToggleBtn" type="button" data-i18n="lang-btn">EN</button>
+  </div>
+
+  <header>
+    <p class="eyebrow" data-i18n="eyebrow">ВІДДІЛ КРИПТОГРАФІЇ · СХІДНЕ КРИЛО</p>
+    <h1 data-i18n="title">Бюро шифрів «Північна Зірка»</h1>
+    <p class="lede" data-i18n="lede">Робочий стіл шифрувальника.</p>
+    <span class="stamp" data-i18n="stamp">ЗАСЕКРЕЧЕНО</span>
+  </header>
+
+  <!-- ===================== СЕКРЕТНИЙ КПП (вхід/реєстрація) ===================== -->
+  <section class="gate" id="authGate">
+    <div class="gate-card">
+      <p class="gate-kicker" data-i18n="gate-kicker">ПРОПУСКНИЙ ПУНКТ</p>
+      <h2 data-i18n="gate-title">Пред'явіть перепустку</h2>
+      <p class="gate-hint" data-i18n="gate-hint">Логін — прізвище, пароль — ім'я (як у базі агентів бюро).</p>
+      <p class="gate-example" data-i18n="gate-example">Приклад: Романенко / Михайло</p>
+
+      <div class="gate-method-toggle" role="tablist">
+        <button class="gate-method" id="gateMethodClassic" role="tab" aria-selected="true" data-i18n="gate-method-classic">За прізвищем</button>
+        <button class="gate-method" id="gateMethodEmail" role="tab" aria-selected="false" data-i18n="gate-method-email">За поштою</button>
+      </div>
+
+      <!-- ===== Класичний метод: прізвище / ім'я ===== -->
+      <div id="gateClassicBlock">
+        <div class="gate-tabs" role="tablist">
+          <button class="gate-tab" id="gateTabLogin" role="tab" aria-selected="true" data-i18n="gate-tab-login">Увійти</button>
+          <button class="gate-tab" id="gateTabRegister" role="tab" aria-selected="false" data-i18n="gate-tab-register">Реєстрація</button>
+        </div>
+
+        <form id="gateLoginForm" autocomplete="off">
+          <label class="field-label" for="gateLoginName" data-i18n="gate-field-login">Прізвище</label>
+          <input type="text" id="gateLoginName" required>
+          <label class="field-label" for="gateLoginPass" data-i18n="gate-field-pass">Ім'я</label>
+          <input type="password" id="gateLoginPass" required>
+          <button class="action primary gate-submit" type="submit" data-i18n="gate-submit-login">Увійти за пропуском</button>
+          <p class="gate-error" id="gateLoginError"></p>
+        </form>
+
+        <form id="gateRegisterForm" autocomplete="off" hidden>
+          <label class="field-label" for="gateRegLogin" data-i18n="gate-field-login">Прізвище</label>
+          <input type="text" id="gateRegLogin" required>
+          <label class="field-label" for="gateRegPass" data-i18n="gate-field-pass">Ім'я</label>
+          <input type="password" id="gateRegPass" required>
+          <button class="action gate-submit" type="submit" data-i18n="gate-submit-register">Оформити перепустку</button>
+          <p class="gate-error" id="gateRegisterError"></p>
+        </form>
+      </div>
+
+      <!-- ===== Додатковий метод: пошта + код підтвердження ===== -->
+      <div id="gateEmailBlock" hidden>
+        <div class="gate-tabs" role="tablist">
+          <button class="gate-tab" id="gateEmailTabLogin" role="tab" aria-selected="true" data-i18n="gate-tab-login">Увійти</button>
+          <button class="gate-tab" id="gateEmailTabRegister" role="tab" aria-selected="false" data-i18n="gate-tab-register">Реєстрація</button>
+        </div>
+
+        <form id="gateEmailLoginForm" autocomplete="off">
+          <label class="field-label" for="gateEmailLoginAddr" data-i18n="gate-field-email">Пошта</label>
+          <input type="email" id="gateEmailLoginAddr" required>
+          <label class="field-label" for="gateEmailLoginPass" data-i18n="gate-field-emailpass">Пароль</label>
+          <input type="password" id="gateEmailLoginPass" required>
+          <button class="action primary gate-submit" type="submit" data-i18n="gate-submit-login">Увійти за пропуском</button>
+          <p class="gate-error" id="gateEmailLoginError"></p>
+        </form>
+
+        <form id="gateEmailRegisterForm" autocomplete="off" hidden>
+          <label class="field-label" for="gateEmailRegAddr" data-i18n="gate-field-email">Пошта</label>
+          <input type="email" id="gateEmailRegAddr" required>
+          <label class="field-label" for="gateEmailRegPass" data-i18n="gate-field-emailpass">Пароль</label>
+          <input type="password" id="gateEmailRegPass" required>
+          <button class="action gate-submit" type="submit" data-i18n="gate-submit-register">Оформити перепустку</button>
+          <p class="gate-error" id="gateEmailRegisterError"></p>
+        </form>
+
+        <form id="gateEmailVerifyForm" autocomplete="off" hidden>
+          <p class="gate-verify-note" id="gateVerifyNote"></p>
+          <label class="field-label" for="gateEmailCode" data-i18n="gate-field-code">Код підтвердження</label>
+          <input type="text" id="gateEmailCode" inputmode="numeric" required>
+          <button class="action gate-submit" type="submit" data-i18n="gate-submit-verify">Підтвердити пошту</button>
+          <p class="gate-error" id="gateEmailVerifyError"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ОСНОВНИЙ ВМІСТ (лише після входу) ===================== -->
+  <div id="appContent" hidden>
+
+  <div class="badge">
+    <div class="badge-row">
+      <span class="id" id="badgeId">ID: 00000</span>
+      <span class="name" id="badgeName">—</span>
+      <div class="badge-actions">
+        <button id="casesToggleBtn" type="button" data-i18n="badge-cases-toggle">Відмінки</button>
+        <button id="customToggleBtn" type="button" data-i18n="badge-custom">Свій позивний</button>
+        <button id="generateAgentBtn" type="button" data-i18n="badge-generate">Новий позивний</button>
+      </div>
+    </div>
+    <div class="custom-row">
+      <input type="text" id="customInput" hidden data-i18n-ph="badge-custom-placeholder" placeholder="Впишіть власний позивний…">
+      <button class="mini-btn" id="customSaveBtn" type="button" hidden data-i18n="badge-custom-save">Зберегти</button>
+    </div>
+    <div class="cases-panel" id="casesPanel" hidden></div>
+  </div>
+
+  <div class="mode-tabs" role="tablist">
+    <button class="mode-tab" id="modePractice" role="tab" aria-selected="true" data-i18n="mode-practice">Практика</button>
+    <button class="mode-tab" id="modeLevels" role="tab" aria-selected="false" data-i18n="mode-levels">Рівні</button>
+  </div>
+
+  <!-- ===================== PRACTICE MODE ===================== -->
+  <section id="practiceSection">
+    <div class="tabs" role="tablist">
+      <button class="tab" id="tabCaesar" role="tab" aria-selected="true" data-i18n="tab-caesar">Шифр Цезаря</button>
+      <button class="tab" id="tabTransp" role="tab" aria-selected="false" data-i18n="tab-transp">Шифр перестановки</button>
+      <button class="tab" id="tabFreq" role="tab" aria-selected="false" data-i18n="tab-freq">Частотний аналіз</button>
+    </div>
+
+    <section class="panel" id="panelCaesar">
+      <h2 data-i18n="caesar-h2">Диск Цезаря</h2>
+      <p class="sub" data-i18n="caesar-sub">Кожна літера зсувається по колу абетки.</p>
+
+      <div class="wheel-row">
+        <div>
+          <div class="wheel-box">
+            <svg viewBox="0 0 220 220" aria-hidden="true">
+              <circle cx="110" cy="110" r="104" fill="#111a24" stroke="#2dd4bf" stroke-opacity="0.35"/>
+              <circle cx="110" cy="110" r="70" fill="#16212c" stroke="#2dd4bf" stroke-opacity="0.35"/>
+              <g id="outerRing"></g>
+              <g id="innerRing"></g>
+              <circle cx="110" cy="110" r="6" fill="#f2a93c"/>
+            </svg>
+          </div>
+          <p class="wheel-caption" data-i18n="wheel-caption">зовнішнє коло — відкритий текст</p>
+        </div>
+        <div class="shift-control">
+          <label for="shiftRange" data-i18n="shift-label">Крок зсуву (ключ)</label>
+          <div class="shift-row">
+            <input type="range" id="shiftRange" min="0" max="32" value="3">
+            <input type="text" id="shiftNum" class="shift-num" value="3" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <label class="field-label" for="caesarInput" data-i18n="field-text">Текст</label>
+      <textarea id="caesarInput" data-i18n-ph="caesar-placeholder" placeholder="Введіть донесення…">Штаб підтверджує зустріч на світанку</textarea>
+
+      <div class="btn-row">
+        <button class="action primary" id="caesarEncryptBtn" type="button" data-i18n="btn-encrypt">Зашифрувати</button>
+        <button class="action" id="caesarDecryptBtn" type="button" data-i18n="btn-decrypt">Розшифрувати</button>
+        <button class="action ghost" id="caesarClearBtn" type="button" data-i18n="btn-clear">Очистити</button>
+      </div>
+
+      <div class="output-box">
+        <div class="head"><span data-i18n="result-label">Результат</span><button class="copy-btn" data-copy-target="caesarResult" data-i18n="copy-btn" type="button">копіювати</button></div>
+        <div class="result" id="caesarResult">—</div>
+      </div>
+    </section>
+
+    <section class="panel" id="panelTransp" hidden>
+      <h2 data-i18n="transp-h2">Ґрати перестановки</h2>
+      <p class="sub" data-i18n="transp-sub">Текст вкладається у рядки під ключовим словом.</p>
+
+      <div class="key-row">
+        <div class="field">
+          <label class="field-label" for="transpKey" data-i18n="field-key">Ключове слово</label>
+          <input type="text" id="transpKey" value="ЗІРКА">
+        </div>
+      </div>
+
+      <label class="field-label" for="transpInput" data-i18n="field-text">Текст</label>
+      <textarea id="transpInput" data-i18n-ph="transp-placeholder" placeholder="Введіть донесення…">Донесення надійде опівночі біля старого маяка</textarea>
+
+      <div class="btn-row">
+        <button class="action primary" id="transpEncryptBtn" type="button" data-i18n="btn-encrypt">Зашифрувати</button>
+        <button class="action" id="transpDecryptBtn" type="button" data-i18n="btn-decrypt">Розшифрувати</button>
+        <button class="action ghost" id="transpClearBtn" type="button" data-i18n="btn-clear">Очистити</button>
+      </div>
+
+      <div class="output-box">
+        <div class="head"><span data-i18n="result-label">Результат</span><button class="copy-btn" data-copy-target="transpResult" data-i18n="copy-btn" type="button">копіювати</button></div>
+        <div class="result" id="transpResult">—</div>
+      </div>
+      <div class="grid-preview" id="transpGrid" aria-hidden="true"></div>
+    </section>
+
+    <section class="panel" id="panelFreq" hidden>
+      <h2 data-i18n="freq-h2">Частотний аналіз літер</h2>
+      <p class="sub" data-i18n="freq-sub">Порахуйте, яка літера зустрічається найчастіше.</p>
+
+      <label class="field-label" for="freqInput" data-i18n="field-text">Текст</label>
+      <textarea id="freqInput" data-i18n-ph="freq-placeholder" placeholder="Встав сюди шифротекст…"></textarea>
+
+      <div class="btn-row freq-controls">
+        <button class="action primary" id="freqAnalyzeBtn" type="button" data-i18n="freq-analyze-btn">Аналізувати</button>
+        <div class="freq-lang-toggle">
+          <button class="mini-btn" id="freqLangUk" type="button" aria-pressed="false" data-i18n="freq-use-uk">УКР</button>
+          <button class="mini-btn" id="freqLangEn" type="button" aria-pressed="false" data-i18n="freq-use-en">ENG</button>
+        </div>
+        <span class="freq-detected" id="freqDetected"></span>
+      </div>
+
+      <div class="freq-table-wrap">
+        <table class="freq-table">
+          <thead>
+            <tr>
+              <th data-i18n="freq-table-letter">Літера</th>
+              <th data-i18n="freq-table-count">Кількість</th>
+              <th data-i18n="freq-table-percent">Відсоток</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="freqTableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="freq-guess-box" id="freqGuessBox"></div>
+
+      <div class="freq-reference">
+        <h3 data-i18n="freq-ref-h3">Еталонна частота літер мови</h3>
+        <p class="sub" data-i18n="freq-ref-sub">Середній відсоток, з яким літера трапляється у звичайному тексті мови (орієнтовні, добре відомі в криптографії значення). Саме із цим еталоном звіряють спостережений розподіл, коли зламують шифр Цезаря.</p>
+        <p class="freq-ref-tip" data-i18n="freq-ref-tip">Шифр перестановки лише міняє літери місцями, тому його частотний розподіл завжди збігається з текстом-оригіналом — а ось шифр Цезаря зсуває самі літери, тому зламується саме частотним аналізом.</p>
+        <div class="freq-lang-toggle">
+          <button class="mini-btn" id="freqRefLangUk" type="button" aria-pressed="true" data-i18n="freq-use-uk">УКР</button>
+          <button class="mini-btn" id="freqRefLangEn" type="button" aria-pressed="false" data-i18n="freq-use-en">ENG</button>
+        </div>
+        <div class="freq-table-wrap">
+          <table class="freq-table">
+            <thead>
+              <tr>
+                <th data-i18n="freq-table-letter">Літера</th>
+                <th data-i18n="freq-table-percent">Відсоток</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="freqRefTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- ===================== LEVELS MODE ===================== -->
+  <section id="levelsSection" hidden>
+    <div class="tabs" role="tablist">
+      <button class="tab" id="levelTabCaesar" role="tab" aria-selected="true" data-i18n="tab-caesar">Шифр Цезаря</button>
+      <button class="tab" id="levelTabTransp" role="tab" aria-selected="false" data-i18n="tab-transp">Шифр перестановки</button>
+    </div>
+
+    <section class="panel" id="levelsCaesar">
+      <h2 data-i18n="tab-caesar">Шифр Цезаря</h2>
+      <p class="sub" data-i18n="levels-caesar-sub">Оберіть рівень.</p>
+      <div class="level-grid" id="levelsCaesarCards"></div>
+    </section>
+
+    <section class="panel" id="levelsTransp" hidden>
+      <h2 data-i18n="tab-transp">Шифр перестановки</h2>
+      <p class="sub" data-i18n="levels-transp-sub">Оберіть рівень.</p>
+      <div class="level-grid" id="levelsTranspCards"></div>
+    </section>
+
+    <section class="panel challenge-panel" id="challengePanel" hidden>
+      <button class="action ghost challenge-close" id="challengeCloseBtn" type="button">✕</button>
+      <h3 id="challengeTitle">Рівень</h3>
+
+      <label class="field-label" data-i18n="challenge-cipher-label">Перехоплене шифрування</label>
+      <div class="challenge-cipher" id="challengeCipherText">—</div>
+
+      <div class="challenge-controls" id="challengeCaesarControls">
+        <div class="shift-control">
+          <label for="challengeShiftRange" data-i18n="challenge-your-key">Ваш ключ</label>
+          <div class="shift-row">
+            <input type="range" id="challengeShiftRange" min="0" max="32" value="0">
+            <input type="text" id="challengeShiftNum" class="shift-num" value="0" inputmode="numeric">
+          </div>
+        </div>
+      </div>
+
+      <div class="challenge-controls" id="challengeTranspControls" hidden>
+        <div class="field">
+          <label class="field-label" for="challengeKeyInput" data-i18n="challenge-your-key">Ваш ключ</label>
+          <input type="text" id="challengeKeyInput" data-i18n-ph="field-key" placeholder="Ключове слово">
+        </div>
+      </div>
+
+      <label class="field-label" data-i18n="challenge-preview">Ваша розшифровка</label>
+      <div class="result" id="challengePreview">—</div>
+      <div class="grid-preview" id="challengeGrid"></div>
+
+      <div class="btn-row">
+        <button class="action primary" id="challengeCheckBtn" type="button" data-i18n="btn-check">Перевірити</button>
+        <button class="action" id="challengeHintBtn" type="button" data-i18n="btn-hint">Підказка</button>
+        <button class="action ghost" id="challengeNewBtn" type="button" data-i18n="btn-new-round">Новий раунд</button>
+      </div>
+      <p class="challenge-feedback" id="challengeFeedback"></p>
+    </section>
+  </section>
+
+  <div class="log-section">
+    <div class="log-head">
+      <h2 data-i18n="log-title">Журнал перехоплень</h2>
+      <button id="clearLogBtn" type="button" data-i18n="log-clear">Очистити журнал</button>
+    </div>
+    <div id="logList"></div>
+  </div>
+
+  <footer data-i18n="footer">Бюро шифрів «Північна Зірка» · навчальний проєкт із криптографії</footer>
+  </div> <!-- /appContent -->
+</div>
+
+<script src="js/ciphers.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/nicknames.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/gate.js"></script>
+<script src="js/frequency.js"></script>
+<script src="js/game.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

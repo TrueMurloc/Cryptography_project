@@ -1,0 +1,136 @@
+{
+  "info": {
+    "name": "North Star Bureau (site + auth API)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
+    { "key": "emailToken", "value": "" },
+    { "key": "emailCode", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "0. GET / (site)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/", "host": ["{{baseUrl}}"], "path": [""] }
+      }
+    },
+    {
+      "name": "1. GET /login (Basic Auth)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/login", "host": ["{{baseUrl}}"], "path": ["login"] },
+        "auth": {
+          "type": "basic",
+          "basic": [
+            { "key": "username", "value": "Романенко", "type": "string" },
+            { "key": "password", "value": "Михайло", "type": "string" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "2. POST /register",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/register", "host": ["{{baseUrl}}"], "path": ["register"] },
+        "body": { "mode": "raw", "raw": "{\n  \"login\": \"НовийКористувач\",\n  \"password\": \"НовийПароль\"\n}" }
+      }
+    },
+    {
+      "name": "3. POST /auth/login (get JWT)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const data = pm.response.json();",
+              "if (data.token) { pm.collectionVariables.set('token', data.token); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] },
+        "body": { "mode": "raw", "raw": "{\n  \"login\": \"Романенко\",\n  \"password\": \"Михайло\"\n}" }
+      }
+    },
+    {
+      "name": "4. GET /protected (Bearer token)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/protected", "host": ["{{baseUrl}}"], "path": ["protected"] },
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+        }
+      }
+    },
+    {
+      "name": "5. POST /auth/email/register",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const data = pm.response.json();",
+              "if (data.devCode) { pm.collectionVariables.set('emailCode', data.devCode); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/auth/email/register", "host": ["{{baseUrl}}"], "path": ["auth", "email", "register"] },
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"agent@example.com\",\n  \"password\": \"SecretPass1\"\n}" },
+        "description": "Реального SMTP немає: код підтвердження повертається у відповіді як devCode і друкується в консолі сервера."
+      }
+    },
+    {
+      "name": "6. POST /auth/email/verify",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/auth/email/verify", "host": ["{{baseUrl}}"], "path": ["auth", "email", "verify"] },
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"agent@example.com\",\n  \"code\": \"{{emailCode}}\"\n}" }
+      }
+    },
+    {
+      "name": "7. POST /auth/email/login (get JWT)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "const data = pm.response.json();",
+              "if (data.token) { pm.collectionVariables.set('emailToken', data.token); }"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/auth/email/login", "host": ["{{baseUrl}}"], "path": ["auth", "email", "login"] },
+        "body": { "mode": "raw", "raw": "{\n  \"email\": \"agent@example.com\",\n  \"password\": \"SecretPass1\"\n}" }
+      }
+    },
+    {
+      "name": "8. GET /protected (email token)",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/protected", "host": ["{{baseUrl}}"], "path": ["protected"] },
+        "auth": {
+          "type": "bearer",
+          "bearer": [{ "key": "token", "value": "{{emailToken}}", "type": "string" }]
+        }
+      }
+    }
+  ]
+}
